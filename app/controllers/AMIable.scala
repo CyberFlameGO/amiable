@@ -41,14 +41,9 @@ class AMIable @Inject()(override val amiableConfigProvider: AmiableConfigProvide
     val ssa = SSA.fromParams(stackOpt, stageOpt, appOpt)
     attempt {
       for {
-        instances <- Prism.getInstances(ssa)
-        amiArns = instances.flatMap(_.amiArn).distinct
-        amis <- Attempt.successfulAttempts(amiArns.map(Prism.getAMI))
-        amisWithUpgrades = amis.map(Recommendations.amiWithUpgrade(agents.allAmis))
-        amisWithInstances = PrismLogic.amiInstances(amisWithUpgrades, instances)
-        amiSSAs = PrismLogic.amiSSAs(amisWithInstances)
+        (allAmis, amiSSAs) <- PrismLogic.ssaInstanceAmis(ssa, agents)
       } yield {
-        Ok(views.html.instanceAMIs(ssa, amisWithUpgrades, PrismLogic.sortSSAAmisByAge(amiSSAs)))
+        Ok(views.html.instanceAMIs(ssa, allAmis, amiSSAs))
       }
     }
   }

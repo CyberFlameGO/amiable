@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.10.67",
   "com.gu" %% "play-googleauth" % "0.5.0",
   specs2 % Test,
-  "org.scalatest" %% "scalatest" % "2.2.6" % Test,
+  "org.scalatest" %% "scalatest" % "3.0.0" % Test,
   "org.mockito" % "mockito-core" % "1.10.19" % Test
 )
 

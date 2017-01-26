@@ -32,6 +32,10 @@ case class Attempt[A] private (underlying: Future[Either[AMIableErrors, A]]) {
       scala.Left(apiErrors)
     }
   }
+
+  @deprecated("This is required for correct for-comp usage but doesn't make sense for this type. See https://issues.scala-lang.org/browse/SI-1336", "")
+  def withFilter(f: A => Boolean): Attempt[A] =
+    throw new RuntimeException("This is required for correct for-comp usage, see https://issues.scala-lang.org/browse/SI-1336")
 }
 
 object Attempt {

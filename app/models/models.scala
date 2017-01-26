@@ -69,7 +69,7 @@ case class Origin(
   accountNumber: String
 )
 
-case class SSA (
+case class SSA(
   stack: Option[String] = None,
   stage: Option[String] = None,
   app: Option[String] = None
@@ -86,6 +86,10 @@ object SSA {
 
   def empty = SSA(None, None, None)
 }
+
+case class DashboardPrefs(
+  ssas: List[SSA]
+)
 
 case class AMIableError(
   message: String,

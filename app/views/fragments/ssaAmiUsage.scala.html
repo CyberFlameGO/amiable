@@ -1,0 +1,38 @@
+@(ssa: SSA, amiSSAs: List[(SSA, scala.List[AMI])])
+
+@import views.html.fragments.{ssaAmiForm, amiOverlay, heading, printSSA}
+
+<div class="row">
+    <div class="ssa-amis">
+    @for((ssa, amis) <- amiSSAs) {
+        @if(ssa.isEmpty) {
+            @* show AMIs with empty SSAs in their own block (there are lots of them) *@
+        </div>
+</div>
+
+<div class="row">
+    @printSSA(ssa)
+<div class="ssa-amis">
+@for(ami <- amis) {
+    <div class="ssa-amis__item">
+    @amiOverlay(ami)
+    </div>
+}
+</div>
+<div class="row">
+    <div class="ssa-amis">
+    } else {
+        <div class="ssa-amis__item">
+            <div class="card">
+                <div class="card-content">
+                    @printSSA(ssa)
+                    @for(ami <- amis) {
+                        @amiOverlay(ami)
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    }
+    </div>
+</div>

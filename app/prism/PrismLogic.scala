@@ -1,10 +1,30 @@
 package prism
 
+import config.AMIableConfig
 import datetime.DateUtils
 import models._
 import org.joda.time.DateTime
+import services.Agents
+
+import scala.concurrent.ExecutionContext
 
 object PrismLogic {
+  /**
+    * Attempts to fetch all the AMIs in use for instances with the
+    * provided SSA tags.
+    */
+  def ssaInstanceAmis(ssa: SSA, agents: Agents)(implicit conf: AMIableConfig, ec: ExecutionContext): Attempt[(List[AMI], List[(SSA, List[AMI])])] = {
+    for {
+      instances <- Prism.getInstances(ssa)
+      amiArns = instances.flatMap(_.amiArn).distinct
+      amis <- Attempt.successfulAttempts(amiArns.map(Prism.getAMI))
+      amisWithUpgrades = amis.map(Recommendations.amiWithUpgrade(agents.allAmis))
+      amisWithInstances = PrismLogic.amiInstances(amisWithUpgrades, instances)
+      instanceAmis = PrismLogic.amiSSAs(amisWithInstances)
+    } yield amisWithUpgrades -> sortSSAAmisByAge(instanceAmis)
+  }
+
+
   def oldInstances(instanceAmis: List[(Instance, Option[AMI])]): List[Instance] = {
     instanceAmis
       .filter { case (_, amiOpt) => amiOpt.exists(amiIsOld) }
