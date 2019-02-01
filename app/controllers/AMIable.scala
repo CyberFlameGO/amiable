@@ -1,7 +1,8 @@
 package controllers
 
 import auth.AuthActions
-import config.AmiableConfigProvider
+import config.{AMIableConfig, AmiableConfigProvider}
+import javax.inject.Inject
 import metrics.Charts
 import models._
 import play.api._
@@ -12,11 +13,12 @@ import services.notification.Notifications
 
 import scala.concurrent.ExecutionContext
 
-class AMIable(override val amiableConfigProvider: AmiableConfigProvider, agents: Agents, notifications: Notifications)
-             (implicit exec: ExecutionContext) extends Controller with AuthActions {
-  implicit val conf = amiableConfigProvider.conf
+class AMIable (val controllerComponents: ControllerComponents, override val amiableConfigProvider: AmiableConfigProvider, agents: Agents, notifications: Notifications)
+             (implicit exec: ExecutionContext) extends BaseController with AuthActions {
 
-  def index = AuthAction.async { implicit request =>
+  implicit val conf: AMIableConfig = amiableConfigProvider.conf
+
+  def index: Action[AnyContent] = AuthAction.async { implicit request =>
     val ssa = SSA(stage = Some("PROD"))
     val charts = Charts.charts(
       instanceCountHistory = agents.oldProdInstanceCountHistory,
@@ -35,7 +37,7 @@ class AMIable(override val amiableConfigProvider: AmiableConfigProvider, agents:
     }
   }
 
-  def ami(imageId: String) = AuthAction.async { implicit request =>
+  def ami(imageId: String): Action[AnyContent] = AuthAction.async { implicit request =>
     attempt {
       for {
         amis <- Prism.getAMIs()
@@ -50,7 +52,7 @@ class AMIable(override val amiableConfigProvider: AmiableConfigProvider, agents:
     }
   }
 
-  def ssaInstanceAMIs(stackOpt: Option[String], stageOpt: Option[String], appOpt: Option[String]) = AuthAction.async { implicit request =>
+  def ssaInstanceAMIs(stackOpt: Option[String], stageOpt: Option[String], appOpt: Option[String]): Action[AnyContent] = AuthAction.async { implicit request =>
     val ssa = SSA.fromParams(stackOpt, stageOpt, appOpt)
     attempt {
       for {
@@ -78,7 +80,7 @@ class AMIable(override val amiableConfigProvider: AmiableConfigProvider, agents:
     }
   }
 
-  def sendEmail = AuthAction.async {
+  def sendEmail: Action[AnyContent] = AuthAction.async {
     attempt {
       for {
         emailIds <- notifications.sendEmail()
