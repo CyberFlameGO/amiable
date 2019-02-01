@@ -39,7 +39,7 @@ libraryDependencies ++= Seq(
   "io.reactivex" %% "rxscala" % "0.26.0",
   "com.amazonaws" % "aws-java-sdk-cloudwatch" % "1.11.113",
   "com.amazonaws" % "aws-java-sdk-ses" % "1.11.113",
-  "com.gu" %% "play-googleauth" % "0.5.0",
+  "com.gu" %% "play-googleauth" % "0.6.0",
   "org.quartz-scheduler" % "quartz" % "2.2.3",
   specs2 % Test,
   "org.scalatest" %% "scalatest" % "2.2.6" % Test,

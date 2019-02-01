@@ -40,7 +40,7 @@ class AmiableConfigProvider(val ws: WSClient, val playConfig: Configuration) {
       clientId = requiredString(playConfig, "auth.google.clientId"),
       clientSecret = requiredString(playConfig, "auth.google.clientSecret"),
       redirectUrl = s"$amiableUrl${routes.Login.oauth2Callback().url}",
-      domain = playConfig.getString("auth.google.apps-domain")
+      domain = requiredString(playConfig, "auth.google.apps-domain")
     )
   }
 
