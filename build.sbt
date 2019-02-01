@@ -2,7 +2,7 @@ name := """amiable"""
 
 version := "1.0-SNAPSHOT"
 
-enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging)
+enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin)
 
 scalaVersion := "2.11.8"
 
@@ -59,8 +59,8 @@ packageSummary := "AMIable"
 packageDescription := """Web app for monitoring the use of AMIs"""
 debianPackageDependencies := Seq("openjdk-8-jre-headless")
 
-import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
-serverLoading in Debian := Systemd
+//serverLoading in Debian := Systemd
+
 riffRaffPackageType := (packageBin in Debian).value
 
 def env(key: String): Option[String] = Option(System.getenv(key))

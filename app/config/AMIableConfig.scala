@@ -25,11 +25,11 @@ class AmiableConfigProvider(val ws: WSClient, val playConfig: Configuration) {
   val amiableUrl = requiredString(playConfig, "host")
 
   val conf = AMIableConfig(
-    playConfig.getString("prism.url").get,
+    playConfig.get[String]("prism.url"),
     ws,
-    playConfig.getString("amiable.mailClient.fromAddress").get,
-    playConfig.getString("amiable.owner.notification.cron").filter(_.nonEmpty),
-    playConfig.getString("amiable.owner.notification.overrideToAddress").filter(_.nonEmpty),
+    playConfig.get[String]("amiable.mailClient.fromAddress"),
+    playConfig.getOptional[String]("amiable.owner.notification.cron"),
+    playConfig.getOptional[String]("amiable.owner.notification.overrideToAddress"),
     amiableUrl
   )
 
@@ -64,7 +64,7 @@ class AmiableConfigProvider(val ws: WSClient, val playConfig: Configuration) {
   }
 
   private def requiredString(config: Configuration, key: String): String = {
-    config.getString(key).getOrElse {
+    config.getOptional[String](key).getOrElse {
       throw new RuntimeException(s"Missing required config property $key")
     }
   }
